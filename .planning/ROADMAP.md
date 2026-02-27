@@ -2,7 +2,7 @@
 
 - [x] **Phase 1: Project Initialization & Basic CLI** - Establish project structure and a basic command-line interface.
 - [x] **Phase 2: Data Source Interaction & Discovery** - Enable the tool to connect to binance.vision and discover relevant data URLs.
-- [ ] **Phase 3: Data Download & Storage Setup** - Implement functionality to download identified .zip files and set up the directory structure.
+- [x] **Phase 3: Data Download & Storage Setup** - Implement functionality to download identified .zip files and set up the directory structure.
 - [ ] **Phase 4: Data Extraction & Finalization** - Extract CSV contents from downloaded .zip files and store them in final structured locations.
 - [ ] **Phase 5: Reliability, Performance & Error Handling** - Enhance the tool with robust error handling, reliability, and performance features.
 
@@ -41,7 +41,7 @@
   2. The tool creates the `<user_data_path>/<SYMBOL>/` directory structure for a given symbol if it doesn't exist.
   3. Downloaded `.zip` files are stored in a temporary, organized manner ready for extraction.
 **Plans**: 1 plan
-- [ ] 03-01-PLAN.md — Implement Download Service and CLI Integration
+- [x] 03-01-PLAN.md — Implement Download Service and CLI Integration
 
 ### Phase 4: Data Extraction & Finalization
 **Goal**: The tool can extract the CSV contents from downloaded `.zip` files and store them as individual `.csv` files in their final structured locations.
@@ -52,7 +52,9 @@
   2. The extracted data is converted and saved as a `.csv` file (e.g., `BTCUSDT-1m-2026-01.csv`).
   3. The `.csv` file is placed in the correct final directory: `<user_data_path>/<SYMBOL>/<KLINECSV_DATA_FILES>`.
   4. The temporary `.zip` file is removed after successful extraction and storage.
-**Plans**: TBD
+**Plans**: 2 plans
+- [ ] 04-01-PLAN.md — Implement Extraction Service and Unit Tests
+- [ ] 04-02-PLAN.md — CLI Integration and Full-Flow Verification
 
 ### Phase 5: Reliability, Performance & Error Handling
 **Goal**: The tool provides a robust, efficient, and user-friendly experience, handling various operational challenges gracefully.
@@ -71,6 +73,6 @@
 |-------|----------------|--------|-----------|
 | 1. Project Initialization & Basic CLI | 2/2 | Completed | 2025-01-24 |
 | 2. Data Source Interaction & Discovery | 1/1 | Completed | 2025-01-24 |
-| 3. Data Download & Storage Setup | 0/1 | In Progress | - |
-| 4. Data Extraction & Finalization | 0/0 | Not started | - |
+| 3. Data Download & Storage Setup | 1/1 | Completed | 2026-02-27 |
+| 4. Data Extraction & Finalization | 0/2 | Not started | - |
 | 5. Reliability, Performance & Error Handling | 0/0 | Not started | - |
