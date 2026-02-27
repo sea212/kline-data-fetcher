@@ -1,7 +1,7 @@
 ## Phases
 
-- [ ] **Phase 1: Project Initialization & Basic CLI** - Establish project structure and a basic command-line interface.
-- [ ] **Phase 2: Data Source Interaction & Discovery** - Enable the tool to connect to binance.vision and discover relevant data URLs.
+- [x] **Phase 1: Project Initialization & Basic CLI** - Establish project structure and a basic command-line interface.
+- [x] **Phase 2: Data Source Interaction & Discovery** - Enable the tool to connect to binance.vision and discover relevant data URLs.
 - [ ] **Phase 3: Data Download & Storage Setup** - Implement functionality to download identified .zip files and set up the directory structure.
 - [ ] **Phase 4: Data Extraction & Finalization** - Extract CSV contents from downloaded .zip files and store them in final structured locations.
 - [ ] **Phase 5: Reliability, Performance & Error Handling** - Enhance the tool with robust error handling, reliability, and performance features.
@@ -17,8 +17,8 @@
   2. User can specify a valid output directory path as a command-line argument.
   3. The tool validates the existence and write-permissions of the specified output directory.
 **Plans**: 2 plans
-- [ ] 01-01-PLAN.md — Setup Basic CLI with Commander.js
-- [ ] 01-02-PLAN.md — Implement Output Directory Validation and Integration
+- [x] 01-01-PLAN.md — Setup Basic CLI with Commander.js
+- [x] 01-02-PLAN.md — Implement Output Directory Validation and Integration
 
 ### Phase 2: Data Source Interaction & Discovery
 **Goal**: The tool can successfully identify and list all downloadable kline data `.zip` files for a given symbol and interval from `binance.vision`.
@@ -30,7 +30,7 @@
   3. The tool successfully filters out `.zip.CHECKSUM` links from the list of downloadable files.
   4. The tool can present a list of valid `.zip` file URLs to be downloaded.
 **Plans**: 1 plan
-- [ ] 02-01-PLAN.md — Implement Binance Vision Kline Data Discovery Service
+- [x] 02-01-PLAN.md — Implement Binance Vision Kline Data Discovery Service
 
 ### Phase 3: Data Download & Storage Setup
 **Goal**: The tool can download the identified `.zip` files and create the correct directory structure to prepare for data extraction.
@@ -40,7 +40,8 @@
   1. For each identified `.zip` URL, the tool successfully downloads the file to a temporary location.
   2. The tool creates the `<user_data_path>/<SYMBOL>/` directory structure for a given symbol if it doesn't exist.
   3. Downloaded `.zip` files are stored in a temporary, organized manner ready for extraction.
-**Plans**: TBD
+**Plans**: 1 plan
+- [ ] 03-01-PLAN.md — Implement Download Service and CLI Integration
 
 ### Phase 4: Data Extraction & Finalization
 **Goal**: The tool can extract the CSV contents from downloaded `.zip` files and store them as individual `.csv` files in their final structured locations.
@@ -68,8 +69,8 @@
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Project Initialization & Basic CLI | 0/2 | Not started | - |
-| 2. Data Source Interaction & Discovery | 0/0 | Not started | - |
-| 3. Data Download & Storage Setup | 0/0 | Not started | - |
+| 1. Project Initialization & Basic CLI | 2/2 | Completed | 2025-01-24 |
+| 2. Data Source Interaction & Discovery | 1/1 | Completed | 2025-01-24 |
+| 3. Data Download & Storage Setup | 0/1 | In Progress | - |
 | 4. Data Extraction & Finalization | 0/0 | Not started | - |
 | 5. Reliability, Performance & Error Handling | 0/0 | Not started | - |
