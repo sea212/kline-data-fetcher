@@ -1,17 +1,50 @@
 import fetch from 'node-fetch';
 import * as cheerio from 'cheerio';
-import { KlineDiscoveryOptions } from './binance-vision.types';
+import { URL } from 'url'; // Node.js built-in URL module
 
-export async function getKlineZipFileUrls(options: KlineDiscoveryOptions): Promise<string[]> {
-  const market = options.market || 'spot';
-  const dataType = options.dataType || 'monthly';
+import { KlineDiscoveryOptions, KlineFileUrlResult } from './binance-vision.types';
 
-  // Construct the base URL for discovery
-  // Example: https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1m/
-  const discoveryUrl = `https://data.binance.vision/data/${market}/${dataType}/klines/${options.symbol.toUpperCase()}/${options.interval}/`;
+/**
+ * Constructs the binance.vision URL for a specific market, data type, symbol, and interval.
+ * @param options The discovery options.
+ * @returns The constructed URL string.
+ */
+function getKlineDiscoveryUrl(options: KlineDiscoveryOptions): string {
+    const { symbol, interval, market = 'spot', dataType = 'monthly' } = options;
+    const baseUrl = 'https://data.binance.vision/data';
+    return `${baseUrl}/${market}/${dataType}/klines/${symbol.toUpperCase()}/${interval}/`;
+}
 
-  console.log('Constructed discovery URL:', discoveryUrl);
+export async function getKlineZipFileUrls(options: KlineDiscoveryOptions): Promise<KlineFileUrlResult> {
+  const discoveryUrl = getKlineDiscoveryUrl(options);
+  console.log(`Discovering kline zip files from: ${discoveryUrl}`);
 
-  // The actual fetching and parsing logic will be implemented in Task 2.
-  return [];
+  let response;
+  try {
+    response = await fetch(discoveryUrl);
+  } catch (error) {
+    console.error(`Failed to fetch discovery URL ${discoveryUrl}:`, error);
+    return []; // Return empty array on network error
+  }
+
+  if (!response.ok) {
+    console.error(`Failed to fetch discovery URL ${discoveryUrl}: ${response.status} ${response.statusText}`);
+    return []; // Return empty array on HTTP error
+  }
+
+  const html = await response.text();
+  const $ = cheerio.load(html);
+
+  const zipFileUrls: string[] = [];
+  $('a').each((_i, link) => {
+    const href = $(link).attr('href');
+    if (href && href.endsWith('.zip') && !href.endsWith('.zip.CHECKSUM')) {
+      const fullUrl = new URL(href, discoveryUrl).toString();
+      if (fullUrl.startsWith(discoveryUrl)) {
+        zipFileUrls.push(fullUrl);
+      }
+    }
+  });
+
+  return zipFileUrls;
 }
