@@ -6,7 +6,9 @@ const { Command } = require('commander');
 const { validateAndPrepareOutputDir } = require('./utils/fs-utils.js');
 const { getKlineZipFileUrls } = require('./data-source/binance-vision.service'); // Import discovery service
 const { DownloadService } = require('./services/download.service'); // Import DownloadService
+const { ExtractionService } = require('./services/extraction.service'); // Import ExtractionService
 const path = require('path'); // Import path module
+const { mkdir } = require('fs').promises; // Import mkdir from fs.promises
 const fs = require('fs'); // Import fs for path manipulation (though fs/promises is used in service)
 
 const program = new Command();
@@ -58,6 +60,15 @@ program
         try {
           await DownloadService.downloadFile(url, destPath);
           console.log(`Successfully downloaded ${fileName}.`);
+
+          // Start extraction
+          try {
+            console.log(`Extracting ${fileName} to ${symbolDir}...`);
+            await ExtractionService.extractAndCleanup(destPath, symbolDir);
+            console.log(`Successfully extracted ${fileName} to ${symbolDir}.`);
+          } catch (extractionError) {
+            console.error(`Failed to extract ${fileName}:`, extractionError.message);
+          }
         } catch (error) {
           console.error(`Failed to download ${fileName}:`, error.message);
           // Cleanup is handled within DownloadService.downloadFile on error
