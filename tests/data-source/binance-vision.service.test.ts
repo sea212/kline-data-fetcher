@@ -11,52 +11,57 @@ describe('getKlineZipFileUrls', () => {
     fetchMock.resetMocks();
   });
 
-  const baseDiscoveryUrl = 'https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1m/';
+  const baseS3Url = 'https://s3-ap-northeast-1.amazonaws.com/data.binance.vision/?prefix=data/spot/monthly/klines/BTCUSDT/1m/';
+  const baseDataUrl = 'https://data.binance.vision/';
   const mockOptions: KlineDiscoveryOptions = {
     symbol: 'BTCUSDT',
     interval: '1m',
   };
 
-  // Test Case 1: Successful discovery with valid and invalid links
+  // Test Case 1: Successful discovery with valid and invalid links (XML response)
   test('should return only valid .zip file URLs for successful discovery', async () => {
-    const mockHtml = `
-      <html>
-        <body>
-          <a href="${baseDiscoveryUrl}BTCUSDT-1m-2023-01.zip"></a>
-          <a href="${baseDiscoveryUrl}BTCUSDT-1m-2023-01.zip.CHECKSUM"></a>
-          <a href="${baseDiscoveryUrl}BTCUSDT-1m-2023-02.zip"></a>
-          <a href="/some-other-link"></a>
-          <a href="http://external.com/file.zip"></a>
-        </body>
-      </html>
+    const mockXml = `
+      <ListBucketResult>
+        <Contents>
+          <Key>data/spot/monthly/klines/BTCUSDT/1m/BTCUSDT-1m-2023-01.zip</Key>
+        </Contents>
+        <Contents>
+          <Key>data/spot/monthly/klines/BTCUSDT/1m/BTCUSDT-1m-2023-01.zip.CHECKSUM</Key>
+        </Contents>
+        <Contents>
+          <Key>data/spot/monthly/klines/BTCUSDT/1m/BTCUSDT-1m-2023-02.zip</Key>
+        </Contents>
+        <Contents>
+          <Key>data/spot/monthly/klines/BTCUSDT/1m/README.txt</Key>
+        </Contents>
+      </ListBucketResult>
     `;
-    fetchMock.mockResponseOnce(mockHtml, { status: 200 });
+    fetchMock.mockResponseOnce(mockXml, { status: 200 });
 
     const result = await getKlineZipFileUrls(mockOptions);
 
     expect(result).toEqual([
-      `${baseDiscoveryUrl}BTCUSDT-1m-2023-01.zip`,
-      `${baseDiscoveryUrl}BTCUSDT-1m-2023-02.zip`,
+      `${baseDataUrl}data/spot/monthly/klines/BTCUSDT/1m/BTCUSDT-1m-2023-01.zip`,
+      `${baseDataUrl}data/spot/monthly/klines/BTCUSDT/1m/BTCUSDT-1m-2023-02.zip`,
     ]);
-    expect(fetchMock).toHaveBeenCalledWith(baseDiscoveryUrl);
+    expect(fetchMock).toHaveBeenCalledWith(baseS3Url);
   });
 
   // Test Case 2: No .zip files found
   test('should return an empty array when no .zip files are found', async () => {
-    const mockHtml = `
-      <html>
-        <body>
-          <a href="/some-other-link"></a>
-          <a href="/another-file.txt"></a>
-        </body>
-      </html>
+    const mockXml = `
+      <ListBucketResult>
+        <Contents>
+          <Key>data/spot/monthly/klines/BTCUSDT/1m/README.txt</Key>
+        </Contents>
+      </ListBucketResult>
     `;
-    fetchMock.mockResponseOnce(mockHtml, { status: 200 });
+    fetchMock.mockResponseOnce(mockXml, { status: 200 });
 
     const result = await getKlineZipFileUrls(mockOptions);
 
     expect(result).toEqual([]);
-    expect(fetchMock).toHaveBeenCalledWith(baseDiscoveryUrl);
+    expect(fetchMock).toHaveBeenCalledWith(baseS3Url);
   });
 
   // Test Case 3: HTTP error response (e.g., 404)
@@ -66,7 +71,7 @@ describe('getKlineZipFileUrls', () => {
     const result = await getKlineZipFileUrls(mockOptions);
 
     expect(result).toEqual([]);
-    expect(fetchMock).toHaveBeenCalledWith(baseDiscoveryUrl);
+    expect(fetchMock).toHaveBeenCalledWith(baseS3Url);
   });
 
   // Test Case 4: Network error
@@ -76,7 +81,7 @@ describe('getKlineZipFileUrls', () => {
     const result = await getKlineZipFileUrls(mockOptions);
 
     expect(result).toEqual([]);
-    expect(fetchMock).toHaveBeenCalledWith(baseDiscoveryUrl);
+    expect(fetchMock).toHaveBeenCalledWith(baseS3Url);
   });
 
   // Test Case 5: Different market and dataType
@@ -87,7 +92,7 @@ describe('getKlineZipFileUrls', () => {
       market: 'futures/um',
       dataType: 'daily',
     };
-    const futuresDiscoveryUrl = 'https://data.binance.vision/data/futures/um/daily/klines/BTCUSDT/1m/';
+    const futuresDiscoveryUrl = 'https://s3-ap-northeast-1.amazonaws.com/data.binance.vision/?prefix=data/futures/um/daily/klines/BTCUSDT/1m/';
 
     fetchMock.mockResponseOnce('', { status: 200 }); // Mock response to avoid actual fetch
 
