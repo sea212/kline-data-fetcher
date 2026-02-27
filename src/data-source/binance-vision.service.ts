@@ -1,25 +1,14 @@
 import fetch from 'node-fetch';
 import * as cheerio from 'cheerio';
-import { URL } from 'url'; // Node.js built-in URL module
+import { KlineDiscoveryOptions } from './binance-vision.types';
 
-import { KlineDiscoveryOptions, KlineFileUrlResult } from './binance-vision.types';
+export async function getKlineZipFileUrls(options: KlineDiscoveryOptions): Promise<string[]> {
+  const market = options.market || 'spot';
+  const dataType = options.dataType || 'monthly';
+  const baseUrl = `https://data.binance.vision/data/${market}/${dataType}/klines/${options.symbol.toUpperCase()}/${options.interval}/`;
 
-/**
- * Constructs the binance.vision URL for a specific market, data type, symbol, and interval.
- * @param options The discovery options.
- * @returns The constructed URL string.
- */
-function getKlineDiscoveryUrl(options: KlineDiscoveryOptions): string {
-    const { symbol, interval, market = 'spot', dataType = 'monthly' } = options;
-    const baseUrl = 'https://data.binance.vision/data';
-    return `${baseUrl}/${market}/${dataType}/klines/${symbol.toUpperCase()}/${interval}/`;
-}
+  console.log(`Constructed discovery URL: ${baseUrl}`); // For initial logging as per task
 
-export async function getKlineZipFileUrls(options: KlineDiscoveryOptions): Promise<KlineFileUrlResult> {
-    const discoveryUrl = getKlineDiscoveryUrl(options);
-    console.log(`Discovering kline zip files from: ${discoveryUrl}`); // For initial testing/logging
-
-    // The actual fetching and parsing logic will be implemented in Task 2.
-    // For now, return an empty array or log the URL as per Task 1 instructions.
-    return [];
+  // Actual fetching and parsing will be implemented in Task 2
+  return [];
 }
